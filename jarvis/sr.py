@@ -5,8 +5,9 @@ import asyncio
 import subprocess
 import board
 import adafruit_dotstar
+import requests
 import os
-import select
+
 
 DOTSTAR_DATA = board.D5
 DOTSTAR_CLOCK = board.D6
@@ -27,7 +28,7 @@ class KeyPhrase:
 def getweather():
 
     BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
-    API_KEY = "8086e7ac6aca55da6f5a61ecf8149805"
+    API_KEY = os.getenv('WEATHER_KEY')
     CITY = "Edmonton"
 
     url = BASE_URL + "appid=" + API_KEY + "&q=" + CITY
@@ -50,7 +51,9 @@ def getweather():
 
 
 def music():
-    print('')
+    song = text[:5]
+    requests.put(
+        url="http://localhost:3000/sendQuery", data=song, headers={'Content-Type': 'text/plain'})
 
 
 tasks = [KeyPhrase(["weather", "temperature", "forecast"], getweather),

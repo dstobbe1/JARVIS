@@ -2,17 +2,20 @@ const express = require("express");
 const dotenv = require("dotenv");
 const request = require("request");
 const path = require("path");
+const https = require("https");
 
-const port = 5000;
+const port = 3000;
+
 let access_token = "";
-let query;
 
 dotenv.config();
 
 let spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 let spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
-let spotify_redirect_uri = `http://localhost:${port}/auth/callback`;
+if (!spotify_client_id) return console.error("buddy you need a .env file");
+
+let spotify_redirect_uri = "http://localhost:3000/auth/callback";
 
 let generateRandomString = function (length) {
   let text = "";
@@ -25,6 +28,8 @@ let generateRandomString = function (length) {
 };
 
 let app = express();
+
+app.use(express.text());
 
 app.get("/", (req, res) => {
   if (!access_token) return res.redirect("/auth/login");
@@ -83,8 +88,17 @@ app.get("/favicon.ico", (req, res) => {
 });
 
 app.put("/sendQuery", (req, res) => {
-  query = req.body;
-  console.log(query);
+  track = req.body;
+});
+
+request.put("https://api.spotify.com/v1/me/player/play", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    uris: [track.uri],
+  }),
 });
 
 app.listen(port, () => {

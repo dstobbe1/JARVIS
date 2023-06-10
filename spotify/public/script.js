@@ -96,8 +96,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
   player.connect();
 };
 
-fetch("http://localhost:5000/sendQuery", {
+fetch("http://localhost:3000/sendQuery", {
   method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify("dfgdfg"),
+  body: "query bla bla bla",
 });
